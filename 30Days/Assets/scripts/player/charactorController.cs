@@ -17,12 +17,18 @@ public class charactorController : MonoBehaviour
     [Header("grid")]
     public Transform p;
 
+    public Vector3 origin;
+
+    [Header("farm")]
+    public int seed;
+    public bool farmable;
+
     string[] wk = new string[] { "walk_front", "walk_back", "walk_side" };
     string[] id = new string[] { "idle_ront", "idle_back", "idle_side" };
     // Start is called before the first frame update
-    void Start()
+    public void Awake()
     {
-
+        origin = transform.position + new Vector3(0, 0.2f, 0);
     }
 
     private void Update()
@@ -30,11 +36,24 @@ public class charactorController : MonoBehaviour
         movement();
         set_direction();
         place_plane();
+        farmable = farm_manager.instance.isFarmable(transform.position);
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            Interact();
+        }
     }
 
     public void place_plane()
     {
         p.position = grid.instance.place(transform.position);
+    }
+
+    public void Interact()
+    {
+        if (farmable == true)
+        {
+            farm_manager.instance.Plant(transform.position);
+        }
     }
 
     public void movement()
@@ -78,5 +97,14 @@ public class charactorController : MonoBehaviour
         ani.Play(newState);
 
         currentState = newState;
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        ocean o;
+        if (other.TryGetComponent<ocean>(out o))
+        {
+            transform.position = origin;
+        }
     }
 }

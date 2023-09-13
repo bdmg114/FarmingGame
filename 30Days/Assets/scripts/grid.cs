@@ -10,7 +10,7 @@ public class grid : MonoBehaviour
 
     public static grid instance;
 
-    private void Start()
+    private void Awake()
     {
         if (instance != null)
         {
@@ -28,7 +28,7 @@ public class grid : MonoBehaviour
 
     public Vector3 place(Vector3 ori)
     {
-        return g.CellToWorld(grid_pos(check_ground(ori)));
+        return check_ground(g.CellToWorld(grid_pos(ori)));
     }
 
     public Vector3 check_ground(Vector3 ori)
